@@ -19,7 +19,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('test', function (Request $request) {
-    $notification = array('message' => 'Test notification');
-    broadcast(new TestEvent($notification));
-    return response(['test notification']);
+    // $notification = array('message' => 'Test notification');
+    // broadcast(new TestEvent($notification));
+    // return response(['test notification']);
+    app('amqp')->publish('Message to direct exchange', 'routing-key', [
+        'exchange' => [
+            'type'    => 'direct',
+            'name'    => 'direct.exchange',
+        ],
+    ]);
 });
